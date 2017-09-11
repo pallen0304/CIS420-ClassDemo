@@ -12,12 +12,17 @@ namespace ClassDemo.Controllers
 {
     public class StudentController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationDbContext context;
+
+        public StudentController()
+        {
+            this.context = new ApplicationDbContext();
+        }
 
         // GET: Student
         public ActionResult Index()
         {
-            return View(db.Students.ToList());
+            return View(this.context.Students.ToList());
         }
 
         // GET: Student/Details/5
@@ -27,7 +32,7 @@ namespace ClassDemo.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Student student = db.Students.Find(id);
+            Student student = this.context.Students.Find(id);
             if (student == null)
             {
                 return HttpNotFound();
@@ -50,8 +55,8 @@ namespace ClassDemo.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Students.Add(student);
-                db.SaveChanges();
+                this.context.Students.Add(student);
+                this.context.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -65,7 +70,7 @@ namespace ClassDemo.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Student student = db.Students.Find(id);
+            Student student = this.context.Students.Find(id);
             if (student == null)
             {
                 return HttpNotFound();
@@ -82,8 +87,8 @@ namespace ClassDemo.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(student).State = EntityState.Modified;
-                db.SaveChanges();
+                this.context.Entry(student).State = EntityState.Modified;
+                this.context.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(student);
@@ -96,7 +101,7 @@ namespace ClassDemo.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Student student = db.Students.Find(id);
+            Student student = this.context.Students.Find(id);
             if (student == null)
             {
                 return HttpNotFound();
@@ -109,9 +114,9 @@ namespace ClassDemo.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Student student = db.Students.Find(id);
-            db.Students.Remove(student);
-            db.SaveChanges();
+            Student student = this.context.Students.Find(id);
+            this.context.Students.Remove(student);
+            this.context.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -119,7 +124,7 @@ namespace ClassDemo.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                this.context.Dispose();
             }
             base.Dispose(disposing);
         }
